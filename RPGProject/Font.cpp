@@ -10,15 +10,14 @@ void Font::loadFont(std::string path) {
 	}
 }
 
-void Font::render(SDL_Renderer* renderer, std::string text, int x, int y) {
-	
-	SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, text.c_str(),mTextColor);
-	
+void Font::setText(SDL_Renderer* renderer, std::string text) {
+	SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, text.c_str(), mTextColor);
+
 	if (textSurface == NULL) {
-		fprintf(stderr,"Unable to render text surface ERR : %s\n", TTF_GetError());
+		fprintf(stderr, "Unable to render text surface ERR : %s\n", TTF_GetError());
 		return;
 	}
-	
+
 	mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
 	if (mTexture == NULL) {
@@ -26,12 +25,18 @@ void Font::render(SDL_Renderer* renderer, std::string text, int x, int y) {
 		return;
 	}
 
-	mWidth = textSurface->w;
-	mHeight = textSurface->h;
-
 	SDL_FreeSurface(textSurface);
 
-	SDL_RenderCopy(renderer, mTexture,NULL,NULL);
+	mWidth = textSurface->w;
+	mHeight = textSurface->h;
+}
+
+void Font::render(SDL_Renderer* renderer,int x, int y) {
+
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+
+	SDL_RenderCopy(renderer, mTexture,NULL,&renderQuad);
+	//SDL_RenderCopyEx(renderer, mTexture,NULL,&renderQuad,NULL,NULL,SDL_FLIP_NONE);
 }
 
 void Font::setColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) {
@@ -48,4 +53,12 @@ void Font::free() {
 		mWidth = 0;
 		mHeight = 0;
 	}
+}
+
+int Font::getWidth() {
+	return mWidth;
+}
+
+int Font::getHeight() {
+	return mHeight;
 }

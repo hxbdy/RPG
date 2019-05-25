@@ -17,6 +17,7 @@ public:
 	void createWindow(std::string title);
 	void free();
 	void render();
+	SDL_Renderer* getRenderer();
 private:
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
