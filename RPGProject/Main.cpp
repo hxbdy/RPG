@@ -1,5 +1,7 @@
 #include "Window.h"
 #include "Font.h"
+#include "Bg.h"
+#include "Sprite.h"
 
 int main(int argc, char* argv[]) {
 
@@ -23,22 +25,31 @@ int main(int argc, char* argv[]) {
 
 	Window window;
 	Font font;
+	Bg bg;
+	Sprite sp;
 
 	window.createWindow("No.1");
-
-	SDL_SetRenderDrawColor(window.getRenderer(), 0x00, 0x00, 0xff, 0x00);
-	SDL_RenderClear(window.getRenderer());
+	bg.loadBG(window.getRenderer(), "bar.bmp");
 
 	font.loadFont("SmileBASIC.ttf");
 	font.setColor(0xff, 0xff, 0xff, 0xff);
+	
 	font.setText(window.getRenderer(),"RION");
 	
-	fprintf(stdout,"TEXT TEXTURE (WIDTH ,HEIGHT) (%02d, %02d)\n", font.getWidth(),font.getHeight());
-	
-	font.render(window.getRenderer(), (SCREEN_WIDTH-font.getWidth()) / 2, (SCREEN_HEIGHT-font.getHeight()) / 2);
+	sp.loadSprite(window.getRenderer());
+	sp.setSprite();
 
-	SDL_RenderPresent(window.getRenderer());
-	SDL_Delay(5000);
+	int spNum = 0;
+	while (true) {
+		bg.render(window.getRenderer());
+		sp.render(window.getRenderer(), spNum, 16, 16);
+		//font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2);
+		SDL_RenderPresent(window.getRenderer());
+		spNum++;
+		if (spNum > SPRITE_FRAMES) {
+			spNum = 0;
+		}
+	}
 
 	window.free();
 

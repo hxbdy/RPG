@@ -25,10 +25,11 @@ void Font::setText(SDL_Renderer* renderer, std::string text) {
 		return;
 	}
 
-	SDL_FreeSurface(textSurface);
-
 	mWidth = textSurface->w;
 	mHeight = textSurface->h;
+
+	SDL_FreeSurface(textSurface);
+
 }
 
 void Font::render(SDL_Renderer* renderer,int x, int y) {
