@@ -1,26 +1,35 @@
+#include "SDL_mixer.h"
+
 #include "Window.h"
 #include "Font.h"
 #include "Bg.h"
 #include "Sprite.h"
+#include "Sound.h"
 
 int main(int argc, char* argv[]) {
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		fprintf(stderr, "SDL could not initialize ERR : %s\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
 
-	//Initialize PNG loading
+	// Initialize PNG loading
 	int imgFlags = IMG_INIT_PNG;
-	if (!(IMG_Init(imgFlags) & imgFlags))
-	{
-		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+	if (!(IMG_Init(imgFlags) & imgFlags)){
+		fprintf(stderr,"SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+		return EXIT_FAILURE;
 	}
 
-	//Initialize SDL_ttf
-	if (TTF_Init() == -1)
-	{
-		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+	// Initialize SDL_ttf
+	if (TTF_Init() == -1){
+		fprintf(stderr,"SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+		return EXIT_FAILURE;
+	}
+
+	// Initialize SDL_mixer
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		fprintf(stderr,"SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+		return EXIT_FAILURE;
 	}
 
 	Window window;
@@ -34,21 +43,83 @@ int main(int argc, char* argv[]) {
 	font.loadFont("SmileBASIC.ttf");
 	font.setColor(0xff, 0xff, 0xff, 0xff);
 	
-	font.setText(window.getRenderer(),"RION");
-	
 	sp.loadSprite(window.getRenderer());
 	sp.setSprite();
 
-	int spNum = 0;
-	while (true) {
-		bg.render(window.getRenderer());
-		sp.render(window.getRenderer(), spNum, 16, 16);
-		//font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2);
-		SDL_RenderPresent(window.getRenderer());
-		spNum++;
-		if (spNum > SPRITE_FRAMES) {
-			spNum = 0;
+	//Main loop flag
+	bool quit = false;
+	//Event handler
+	SDL_Event e;
+
+	Sound sound;
+	sound.loadSound();
+
+	Mix_VolumeChunk(sound.getSe(),30);
+	Mix_VolumeMusic(30);
+
+	font.setText(window.getRenderer(),"BGM : PROGRESS");
+	font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2);
+
+	font.setText(window.getRenderer(), "SE : SELECTION");
+	font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2 + 20);
+
+	//While application is running
+	while (!quit)
+	{
+		//Handle events on queue
+		while (SDL_PollEvent(&e) != 0)
+		{
+			//User requests quit
+			if (e.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+			//Handle key press
+			else if (e.type == SDL_KEYDOWN)
+			{
+				switch (e.key.keysym.sym)
+				{
+					//Play high sound effect
+				case SDLK_1:
+					Mix_PlayChannel(-1, sound.getSe(), 0);
+					break;
+
+				case SDLK_9:
+					//If there is no music playing
+					if (Mix_PlayingMusic() == 0)
+					{
+						//Play the music
+						Mix_PlayMusic(sound.getMusic(), -1);
+
+					}
+					//If music is being played
+					else
+					{
+						//If the music is paused
+						if (Mix_PausedMusic() == 1)
+						{
+							//Resume the music
+							Mix_ResumeMusic();
+
+						}
+						//If the music is playing
+						else
+						{
+							//Pause the music
+							Mix_PauseMusic();
+						}
+					}
+					break;
+
+				case SDLK_0:
+					//Stop the music
+					Mix_HaltMusic();
+					break;
+				}
+			}
 		}
+
+		SDL_RenderPresent(window.getRenderer());
 	}
 
 	window.free();
