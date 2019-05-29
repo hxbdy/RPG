@@ -13,6 +13,10 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
+	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
+		fprintf(stdout,"Warning: Linear texture filtering not enable\n");
+	}
+
 	// Initialize PNG loading
 	int imgFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(imgFlags) & imgFlags)){
@@ -63,62 +67,16 @@ int main(int argc, char* argv[]) {
 	font.setText(window.getRenderer(), "SE : SELECTION");
 	font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2 + 20);
 
-	//While application is running
-	while (!quit)
-	{
-		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0)
-		{
-			//User requests quit
-			if (e.type == SDL_QUIT)
-			{
+	while (!quit) {
+		while (SDL_PollEvent(&e) != 0) {
+			if (e.type == SDL_QUIT) {
 				quit = true;
 			}
-			//Handle key press
-			else if (e.type == SDL_KEYDOWN)
-			{
-				switch (e.key.keysym.sym)
-				{
-					//Play high sound effect
-				case SDLK_1:
-					Mix_PlayChannel(-1, sound.getSe(), 0);
-					break;
-
-				case SDLK_9:
-					//If there is no music playing
-					if (Mix_PlayingMusic() == 0)
-					{
-						//Play the music
-						Mix_PlayMusic(sound.getMusic(), -1);
-
-					}
-					//If music is being played
-					else
-					{
-						//If the music is paused
-						if (Mix_PausedMusic() == 1)
-						{
-							//Resume the music
-							Mix_ResumeMusic();
-
-						}
-						//If the music is playing
-						else
-						{
-							//Pause the music
-							Mix_PauseMusic();
-						}
-					}
-					break;
-
-				case SDLK_0:
-					//Stop the music
-					Mix_HaltMusic();
-					break;
-				}
-			}
+			sp.handleEvent(e);
 		}
-
+		sp.move();
+		bg.render(window.getRenderer());
+		sp.render(window.getRenderer(), 0);
 		SDL_RenderPresent(window.getRenderer());
 	}
 

@@ -1,5 +1,13 @@
 #include "Sprite.h"
 
+Sprite::Sprite() {
+	mTexture = NULL;
+	mPosX = 0;
+	mPosY = 0;
+	mVelX = 0;
+	mVelY = 0;
+}
+
 void Sprite::loadSprite(SDL_Renderer* renderer) {
 	SDL_Texture* newTexture = NULL;
 	SDL_Surface* loadedSurface = IMG_Load("staff.png");
@@ -14,7 +22,7 @@ void Sprite::loadSprite(SDL_Renderer* renderer) {
 		return;
 	}
 	mTexture = newTexture;
-	mWidth = loadedSurface->w;
+	mWidth = loadedSurface->w/3;
 	mHeight = loadedSurface->h;
 	SDL_FreeSurface(loadedSurface);
 }
@@ -36,9 +44,62 @@ void Sprite::setSprite() {
 	mSpClips[SPRITE_BACK].h = 96;
 }
 
-void Sprite::render(SDL_Renderer* renderer,int spriteNum,int x,int y) {
-	SDL_Rect renderQuad = { x, y, mSpClips[spriteNum].w, mSpClips[spriteNum].h };
+void Sprite::render(SDL_Renderer* renderer,int spriteNum) {
+	SDL_Rect renderQuad = { mPosX, mPosY, mSpClips[spriteNum].w, mSpClips[spriteNum].h };
 
 	SDL_RenderCopy(renderer, mTexture, &mSpClips[spriteNum],&renderQuad);
 	//SDL_RenderCopyEx(renderer, mTexture,NULL,&renderQuad,NULL,NULL,SDL_FLIP_NONE);
+}
+
+void Sprite::move() {
+	mPosX += mVelX;
+	if (mPosX<0) {
+		mPosX=0;
+	}
+	else if (mPosX + mWidth > SCREEN_WIDTH) {
+		mPosX = SCREEN_WIDTH - mWidth;
+	}
+	mPosY += mVelY;
+	if (mPosY<0) {
+		mPosY=0;
+	}
+	else if (mPosY + mHeight > SCREEN_HEIGHT) {
+		mPosY = SCREEN_HEIGHT - mHeight;
+	}
+	fprintf(stdout, "mPosX:%03d mPosY:%03d\n",mPosX,mPosY);
+}
+
+void Sprite::handleEvent(SDL_Event& e) {
+	if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
+		switch (e.key.keysym.sym) {
+		case SDLK_UP:
+			mVelY -= mHeight/16;
+			break;
+		case SDLK_DOWN:
+			mVelY += mHeight/16;
+			break;
+		case SDLK_LEFT:
+			mVelX -= mWidth/16;
+			break;
+		case SDLK_RIGHT:
+			mVelX += mWidth/16;
+			break;
+		}
+	}
+	else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
+		switch (e.key.keysym.sym) {
+		case SDLK_UP:
+			mVelY += mHeight/16;
+			break;
+		case SDLK_DOWN:
+			mVelY -= mHeight/16;
+			break;
+		case SDLK_LEFT:
+			mVelX += mWidth/16;
+			break;
+		case SDLK_RIGHT:
+			mVelX -= mWidth/16;
+			break;
+		}
+	}
 }

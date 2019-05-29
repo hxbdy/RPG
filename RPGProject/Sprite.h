@@ -8,6 +8,8 @@
 #include <string>
 #include <cmath>
 
+#include "Window.h"
+
 #ifndef SPRITE_H_
 
 enum {
@@ -19,12 +21,16 @@ enum {
 
 class Sprite {
 public:
-	void render(SDL_Renderer* renderer, int spriteNum, int x, int y);
+	Sprite();
+	void render(SDL_Renderer* renderer, int spriteNum);
 	void loadSprite(SDL_Renderer* renderer);
 	void setSprite(void);
+	void move(void);
+	void handleEvent(SDL_Event& e);
 private:
-	int mWidth;
-	int mHeight;
+	int mWidth,mHeight;
+	int mPosX, mPosY;
+	int mVelX, mVelY;
 	SDL_Rect mSpClips[SPRITE_FRAMES];
 	SDL_Texture* mTexture;
 };
