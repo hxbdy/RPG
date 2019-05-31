@@ -30,25 +30,25 @@ void Sprite::loadSprite(SDL_Renderer* renderer) {
 void Sprite::setSprite() {
 	mSpClips[SPRITE_FRONT].x = 0;
 	mSpClips[SPRITE_FRONT].y = 0;
-	mSpClips[SPRITE_FRONT].w = 96;
-	mSpClips[SPRITE_FRONT].h = 96;
+	mSpClips[SPRITE_FRONT].w = 48;
+	mSpClips[SPRITE_FRONT].h = 48;
 
-	mSpClips[SPRITE_SIDE].x = 96;
+	mSpClips[SPRITE_SIDE].x = 48;
 	mSpClips[SPRITE_SIDE].y = 0;
-	mSpClips[SPRITE_SIDE].w = 96;
-	mSpClips[SPRITE_SIDE].h = 96;
+	mSpClips[SPRITE_SIDE].w = 48;
+	mSpClips[SPRITE_SIDE].h = 48;
 
-	mSpClips[SPRITE_BACK].x = 192;
+	mSpClips[SPRITE_BACK].x = 96;
 	mSpClips[SPRITE_BACK].y = 0;
-	mSpClips[SPRITE_BACK].w = 96;
-	mSpClips[SPRITE_BACK].h = 96;
+	mSpClips[SPRITE_BACK].w = 48;
+	mSpClips[SPRITE_BACK].h = 48;
 }
 
-void Sprite::render(SDL_Renderer* renderer,int spriteNum) {
+void Sprite::render(SDL_Renderer* renderer,int spriteNum, SDL_RendererFlip flip) {
 	SDL_Rect renderQuad = { mPosX, mPosY, mSpClips[spriteNum].w, mSpClips[spriteNum].h };
 
-	SDL_RenderCopy(renderer, mTexture, &mSpClips[spriteNum],&renderQuad);
-	//SDL_RenderCopyEx(renderer, mTexture,NULL,&renderQuad,NULL,NULL,SDL_FLIP_NONE);
+	//SDL_RenderCopy(renderer, mTexture, &mSpClips[spriteNum],&renderQuad);
+	SDL_RenderCopyEx(renderer, mTexture, &mSpClips[spriteNum],&renderQuad,NULL,NULL,flip);
 }
 
 void Sprite::move() {
@@ -102,4 +102,13 @@ void Sprite::handleEvent(SDL_Event& e) {
 			break;
 		}
 	}
+}
+
+void Sprite::setPos(int x, int y) {
+	mPosX = x;
+	mPosY = y;
+}
+
+bool Sprite::checkCollision(bool* wall) {
+	return wall[mPosX / 6 + mPosY];
 }

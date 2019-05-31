@@ -24,3 +24,11 @@ void Bg::render(SDL_Renderer* renderer) {
 	SDL_RenderCopy(renderer, mTexture, NULL, &renderQuad);
 	//SDL_RenderCopyEx(renderer, mTexture,NULL,&renderQuad,NULL,NULL,SDL_FLIP_NONE);
 }
+
+void Bg::setWall(bool* wall) {
+	mWall = wall;
+}
+
+bool Bg::isWall(int x, int y) {
+	return mWall[x + 6 * y];
+}

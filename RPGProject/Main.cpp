@@ -5,6 +5,7 @@
 #include "Bg.h"
 #include "Sprite.h"
 #include "Sound.h"
+#include "Timer.h"
 
 int main(int argc, char* argv[]) {
 
@@ -40,15 +41,36 @@ int main(int argc, char* argv[]) {
 	Font font;
 	Bg bg;
 	Sprite sp;
+	Sprite npc;
+	Timer fps;
+	std::stringstream timeText;
 
-	window.createWindow("No.1");
-	bg.loadBG(window.getRenderer(), "bar.bmp");
+	bool wall[] = {
+		true, true, true, true, true, true,
+		true, true, true, true, true, true,
+		true, false, false, false, false, true,
+		true, true, true, false, false, true,
+		true, false, true, false, false, false,
+		true, false, true, false, false, true,
+		true, true, true, true, true, true
+	};
+
+	// FPS Counter
+	int countedFrames = 0;
+
+	window.createWindow("RPG | FPS : 00");
+	bg.loadBG(window.getRenderer(), "convenience.bmp");
 
 	font.loadFont("SmileBASIC.ttf");
-	font.setColor(0xff, 0xff, 0xff, 0xff);
+	font.setColor(0x00, 0x00, 0x00, 0x00);
 	
 	sp.loadSprite(window.getRenderer());
 	sp.setSprite();
+	sp.setPos(240, 192);
+
+	npc.loadSprite(window.getRenderer());
+	npc.setSprite();
+	npc.setPos(48, 192);
 
 	//Main loop flag
 	bool quit = false;
@@ -61,12 +83,7 @@ int main(int argc, char* argv[]) {
 	Mix_VolumeChunk(sound.getSe(),30);
 	Mix_VolumeMusic(30);
 
-	font.setText(window.getRenderer(),"BGM : PROGRESS");
-	font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2);
-
-	font.setText(window.getRenderer(), "SE : SELECTION");
-	font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2 + 20);
-
+	fps.start();
 	while (!quit) {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
@@ -74,13 +91,40 @@ int main(int argc, char* argv[]) {
 			}
 			sp.handleEvent(e);
 		}
+
+		//Calculate and correct fps
+		float avgFPS = countedFrames / (fps.getTicks() / 1000.f);
+		if (avgFPS > 2000000)
+		{
+			avgFPS = 0;
+		}
+
+		//Set text to be rendered
+		timeText.str("");
+		timeText << "RPG | FPS : " << avgFPS;
+		window.setTitle(timeText.str());
+
+		//Clear screen
+		SDL_SetRenderDrawColor(window.getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(window.getRenderer());
+
+		//font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2);
+
 		sp.move();
+
 		bg.render(window.getRenderer());
-		sp.render(window.getRenderer(), 0);
+		sp.render(window.getRenderer(), SPRITE_SIDE,SDL_FLIP_HORIZONTAL);
+		npc.render(window.getRenderer(), SPRITE_SIDE);
+
 		SDL_RenderPresent(window.getRenderer());
+
+		countedFrames++;
 	}
 
 	window.free();
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
 
 	return EXIT_SUCCESS;
 

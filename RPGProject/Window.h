@@ -9,14 +9,15 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
-#define SCREEN_WIDTH  640
-#define SCREEN_HEIGHT 320
+#define SCREEN_WIDTH  288
+#define SCREEN_HEIGHT 336
 
 class Window {
 public:
 	void createWindow(std::string title);
 	void free();
-	void render();
+	void clear();
+	void setTitle(std::string title);
 	SDL_Renderer* getRenderer();
 private:
 	SDL_Window* mWindow;

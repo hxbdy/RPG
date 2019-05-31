@@ -131,6 +131,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,11 +139,14 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="bar.bmp" />
+    <Image Include="convenience.bmp" />
     <Image Include="staff.png" />
+    <Image Include="textWindow.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="progress.mp3" />

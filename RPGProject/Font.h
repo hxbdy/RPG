@@ -13,6 +13,7 @@
 
 class Font {
 public:
+	Font();
 	void render(SDL_Renderer* renderer,int x,int y);
 	void loadFont(std::string path);
 	void setColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);

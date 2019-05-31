@@ -27,12 +27,17 @@ void Window::free() {
 	mHeight = 0;
 }
 
-void Window::render() {
+void Window::clear() {
 	SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(mRenderer);
-	SDL_RenderPresent(mRenderer);
+	//SDL_RenderPresent(mRenderer);
 }
 
 SDL_Renderer* Window::getRenderer() {
 	return mRenderer;
+}
+
+void Window::setTitle(std::string title) {
+	SDL_SetWindowTitle(mWindow, title.c_str());
+	return;
 }

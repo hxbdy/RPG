@@ -1,5 +1,11 @@
 #include "Font.h"
 
+Font::Font() {
+	mTexture = NULL;
+	mWidth = 0;
+	mHeight = 0;
+}
+
 void Font::loadFont(std::string path) {
 
 	mFont=TTF_OpenFont(path.c_str(),20);
@@ -11,6 +17,8 @@ void Font::loadFont(std::string path) {
 }
 
 void Font::setText(SDL_Renderer* renderer, std::string text) {
+	free();
+
 	SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, text.c_str(), mTextColor);
 
 	if (textSurface == NULL) {

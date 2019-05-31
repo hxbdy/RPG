@@ -33,6 +33,9 @@
     <ClCompile Include="Sound.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -50,12 +53,21 @@
     <ClInclude Include="Sound.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bar.bmp">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="staff.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="textWindow.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="convenience.bmp">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>
