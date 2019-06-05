@@ -7,6 +7,28 @@
 #include "Sound.h"
 #include "Timer.h"
 
+class TextWindow :public Sprite {
+protected:
+	virtual int animete(void* frames) {
+		while(true){
+			setPos(0,formula()*BG_HEIGHT);
+			SDL_Delay(100);
+		}
+	}
+	Timer mTime;
+public:
+	TextWindow() {
+		mTime.start();
+	}
+	int formula() {
+		return sin(mTime.getTicks());
+	}
+	virtual void anim() {
+		SDL_Thread* thread = SDL_CreateThread(animate, "TextWindow", NULL);
+	}
+
+};
+
 int main(int argc, char* argv[]) {
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -38,10 +60,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	Window window;
+	TextWindow twindow;
 	Font font;
 	Bg bg;
 	Sprite sp;
-	Sprite npc;
+	//Sprite npc;
 	Timer fps;
 	std::stringstream timeText;
 
@@ -64,13 +87,12 @@ int main(int argc, char* argv[]) {
 	font.loadFont("SmileBASIC.ttf");
 	font.setColor(0x00, 0x00, 0x00, 0x00);
 	
-	sp.loadSprite(window.getRenderer());
+	sp.loadSprite(window.getRenderer(),"staff.png");
 	sp.setSprite();
 	sp.setPos(240, 192);
 
-	npc.loadSprite(window.getRenderer());
-	npc.setSprite();
-	npc.setPos(48, 192);
+	twindow.loadSprite(window.getRenderer(),"staff.png");
+	twindow.setSprite();
 
 	//Main loop flag
 	bool quit = false;
@@ -84,6 +106,7 @@ int main(int argc, char* argv[]) {
 	Mix_VolumeMusic(30);
 
 	fps.start();
+	twindow.anim();
 	while (!quit) {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
@@ -113,8 +136,8 @@ int main(int argc, char* argv[]) {
 		sp.move();
 
 		bg.render(window.getRenderer());
-		sp.render(window.getRenderer(), SPRITE_SIDE,SDL_FLIP_HORIZONTAL);
-		npc.render(window.getRenderer(), SPRITE_SIDE);
+		sp.render(window.getRenderer(),SDL_FLIP_HORIZONTAL);
+		twindow.render(window.getRenderer(), SDL_FLIP_NONE);
 
 		SDL_RenderPresent(window.getRenderer());
 
