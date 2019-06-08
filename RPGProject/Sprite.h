@@ -3,7 +3,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <SDL_thread.h>
 #include <stdio.h>
 
 #include <string>
@@ -28,23 +27,20 @@ enum {
 class Sprite {
 public:
 	Sprite();
-	void render(SDL_Renderer* renderer,SDL_RendererFlip flip = SDL_FLIP_NONE);
-	void loadSprite(SDL_Renderer* renderer, std::string path);
+	void render(SDL_Renderer* renderer, int spriteNum, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void loadSprite(SDL_Renderer* renderer);
 	void setSprite(void);
-	void move();
+	void move(void);
 	void handleEvent(SDL_Event& e);
 	void setPos(int x, int y);
-	virtual void anim();
-protected:
+	bool checkCollision(bool* wall);
+private:
 	int mWidth,mHeight;
 	int mPosX, mPosY;
 	int mVelX, mVelY;
-	int mSpan;
-	int mSpNum;
-	bool mIsAnimating;
+	bool isAnim;
 	SDL_Rect mSpClips[SPRITE_FRAMES];
 	SDL_Texture* mTexture;
-	static int animate(void* frames);
 };
 
 #endif // !SPRITE_H_
