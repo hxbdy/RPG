@@ -84,6 +84,7 @@ int main(int argc, char* argv[]) {
 	Mix_VolumeMusic(30);
 
 	fps.start();
+	npc.anim();
 	while (!quit) {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
@@ -113,8 +114,8 @@ int main(int argc, char* argv[]) {
 		sp.move();
 
 		bg.render(window.getRenderer());
-		sp.render(window.getRenderer(), SPRITE_SIDE,SDL_FLIP_HORIZONTAL);
-		npc.render(window.getRenderer(), SPRITE_SIDE);
+		sp.render(window.getRenderer(),SDL_FLIP_HORIZONTAL);
+		npc.render(window.getRenderer(), SDL_FLIP_NONE);
 
 		SDL_RenderPresent(window.getRenderer());
 
