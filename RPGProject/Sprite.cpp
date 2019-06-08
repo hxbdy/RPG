@@ -11,40 +11,33 @@ Sprite::Sprite() {
 	mVelY = 0;
 }
 
-void Sprite::loadSprite(SDL_Renderer* renderer) {
+void Sprite::loadSprite(SDL_Renderer* renderer, std::string path) {
 	SDL_Texture* newTexture = NULL;
-SDL_Surface* loadedSurface = IMG_Load("staff.png");
-if (loadedSurface == NULL) {
-	fprintf(stderr, "Unable to load image ERR : %s\n", IMG_GetError());
-	return;
-}
-SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGBA(loadedSurface->format, 0xff, 0xff, 0xff, 0xff));
-newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-if (newTexture == NULL) {
-	fprintf(stderr, "Unable to create texture from SDL ERR : %s\n", SDL_GetError());
-	return;
-}
-mTexture = newTexture;
-mWidth = loadedSurface->w / 3;
-mHeight = loadedSurface->h;
-SDL_FreeSurface(loadedSurface);
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL) {
+		fprintf(stderr, "Unable to load image ERR : %s\n", IMG_GetError());
+		return;
+	}
+	SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGBA(loadedSurface->format, 0xff, 0xff, 0xff, 0xff));
+	newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+	if (newTexture == NULL) {
+		fprintf(stderr, "Unable to create texture from SDL ERR : %s\n", SDL_GetError());
+		return;
+	}
+	mTexture = newTexture;
+	mWidth = loadedSurface->w / 3;
+	mHeight = loadedSurface->h;
+	SDL_FreeSurface(loadedSurface);
 }
 
-void Sprite::setSprite() {
-	mSpClips[SPRITE_FRONT].x = 0;
-	mSpClips[SPRITE_FRONT].y = 0;
-	mSpClips[SPRITE_FRONT].w = 48;
-	mSpClips[SPRITE_FRONT].h = 48;
+void Sprite::setSprite(int* locate) {
 
-	mSpClips[SPRITE_SIDE].x = 48;
-	mSpClips[SPRITE_SIDE].y = 0;
-	mSpClips[SPRITE_SIDE].w = 48;
-	mSpClips[SPRITE_SIDE].h = 48;
-
-	mSpClips[SPRITE_BACK].x = 96;
-	mSpClips[SPRITE_BACK].y = 0;
-	mSpClips[SPRITE_BACK].w = 48;
-	mSpClips[SPRITE_BACK].h = 48;
+	for (int i = 0; i < SPRITE_FRAMES; i++) {
+		mSpClips[i].x = locate[i * 4 + 0];
+		mSpClips[i].y = locate[i * 4 + 1];
+		mSpClips[i].w = locate[i * 4 + 2];
+		mSpClips[i].h = locate[i * 4 + 3];
+	}
 }
 
 void Sprite::render(SDL_Renderer* renderer, SDL_RendererFlip flip) {
@@ -128,4 +121,24 @@ int Sprite::animate(void* spNum) {
 
 void Sprite::anim() {
 	SDL_Thread* thread = SDL_CreateThread(Sprite::animate, "animation", &mSpNum);
+}
+
+TextWindow::TextWindow() {
+	mPosY = BG_HEIGHT;
+	play = false;
+}
+
+void TextWindow::anim() {
+	if (!play) {
+		return;
+	}
+	mPosY -= 50;
+	if (mPosY < 0) {
+		mPosY = 0;
+	}
+}
+
+void TextWindow::render(SDL_Renderer* renderer, SDL_RendererFlip flip) {
+	SDL_Rect renderQuad = { mPosX, mPosY, BG_WIDTH-mPosX, mHeight };
+	SDL_RenderCopyEx(renderer, mTexture, &mSpClips[mSpNum], &renderQuad, NULL, NULL, flip);
 }

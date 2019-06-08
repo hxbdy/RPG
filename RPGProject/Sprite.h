@@ -9,6 +9,7 @@
 #include <string>
 #include <cmath>
 
+#include "Timer.h"
 #include "Window.h"
 #include "Bg.h"
 
@@ -28,14 +29,14 @@ enum {
 class Sprite {
 public:
 	Sprite();
-	void render(SDL_Renderer* renderer,SDL_RendererFlip flip = SDL_FLIP_NONE);
-	void loadSprite(SDL_Renderer* renderer);
-	void setSprite(void);
+	virtual void render(SDL_Renderer* renderer,SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void loadSprite(SDL_Renderer* renderer, std::string path);
+	void setSprite(int* locate);
 	void move();
 	void handleEvent(SDL_Event& e);
 	void setPos(int x, int y);
-	void anim();
-private:
+	virtual void anim();
+protected:
 	int mWidth,mHeight;
 	int mPosX, mPosY;
 	int mVelX, mVelY;
@@ -45,6 +46,14 @@ private:
 	SDL_Rect mSpClips[SPRITE_FRAMES];
 	SDL_Texture* mTexture;
 	static int animate(void* frames);
+};
+
+class TextWindow : public Sprite {
+public:
+	TextWindow();
+	void render(SDL_Renderer* renderer, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void anim();
+	bool play;
 };
 
 #endif // !SPRITE_H_

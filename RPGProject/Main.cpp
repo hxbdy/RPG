@@ -15,33 +15,36 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-		fprintf(stdout,"Warning: Linear texture filtering not enable\n");
+		fprintf(stdout, "Warning: Linear texture filtering not enable\n");
 	}
 
 	// Initialize PNG loading
 	int imgFlags = IMG_INIT_PNG;
-	if (!(IMG_Init(imgFlags) & imgFlags)){
-		fprintf(stderr,"SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+	if (!(IMG_Init(imgFlags) & imgFlags)) {
+		fprintf(stderr, "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 		return EXIT_FAILURE;
 	}
 
 	// Initialize SDL_ttf
-	if (TTF_Init() == -1){
-		fprintf(stderr,"SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+	if (TTF_Init() == -1) {
+		fprintf(stderr, "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
 		return EXIT_FAILURE;
 	}
 
 	// Initialize SDL_mixer
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-		fprintf(stderr,"SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+		fprintf(stderr, "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		return EXIT_FAILURE;
 	}
 
 	Window window;
 	Font font;
 	Bg bg;
+
 	Sprite sp;
 	Sprite npc;
+	TextWindow textWindow;
+
 	Timer fps;
 	std::stringstream timeText;
 
@@ -63,14 +66,21 @@ int main(int argc, char* argv[]) {
 
 	font.loadFont("SmileBASIC.ttf");
 	font.setColor(0x00, 0x00, 0x00, 0x00);
-	
-	sp.loadSprite(window.getRenderer());
-	sp.setSprite();
-	sp.setPos(240, 192);
 
-	npc.loadSprite(window.getRenderer());
-	npc.setSprite();
+	sp.loadSprite(window.getRenderer(), "staff.png");
+	int playerLocate[] = { 0,0,48,48,48,0,48,48,96,0,48,48 };
+	sp.setSprite(playerLocate);
+	sp.setPos(0, 0);
+
+	npc.loadSprite(window.getRenderer(),"staff.png");
+	int npcLocate[] = {0,0,48,48,48,0,48,48,96,0,48,48};
+	npc.setSprite(npcLocate);
 	npc.setPos(48, 192);
+
+	textWindow.loadSprite(window.getRenderer(), "textWindow.bmp");
+	int textWindowLocate[] = { 0,0,640,100,0,0,640,100 ,0,0,640,100 };
+	textWindow.setSprite(textWindowLocate);
+	textWindow.setPos(0, BG_HEIGHT);
 
 	//Main loop flag
 	bool quit = false;
@@ -89,6 +99,16 @@ int main(int argc, char* argv[]) {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
 				quit = true;
+			}
+			if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
+				switch (e.key.keysym.sym) {
+				case SDLK_UP:
+					textWindow.play = true;
+					break;
+				case SDLK_DOWN:
+					textWindow.play = false;
+					break;
+				}
 			}
 			sp.handleEvent(e);
 		}
@@ -112,10 +132,12 @@ int main(int argc, char* argv[]) {
 		//font.render(window.getRenderer(), (SCREEN_WIDTH - font.getWidth()) / 2, (SCREEN_HEIGHT - font.getHeight()) / 2);
 
 		sp.move();
+		textWindow.anim();
 
 		bg.render(window.getRenderer());
 		sp.render(window.getRenderer(),SDL_FLIP_HORIZONTAL);
 		npc.render(window.getRenderer(), SDL_FLIP_NONE);
+		textWindow.render(window.getRenderer());
 
 		SDL_RenderPresent(window.getRenderer());
 
