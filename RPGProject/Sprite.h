@@ -32,9 +32,11 @@ public:
 	virtual void render(SDL_Renderer* renderer,SDL_RendererFlip flip = SDL_FLIP_NONE);
 	void loadSprite(SDL_Renderer* renderer, std::string path);
 	void setSprite(int* locate);
-	void move();
+	void move(void);
 	void handleEvent(SDL_Event& e);
 	void setPos(int x, int y);
+	int getPosX(void);
+	int getPosY(void);
 	virtual void anim();
 protected:
 	int mWidth,mHeight;

@@ -123,6 +123,14 @@ void Sprite::anim() {
 	SDL_Thread* thread = SDL_CreateThread(Sprite::animate, "animation", &mSpNum);
 }
 
+int Sprite::getPosX(void) {
+	return mPosX;
+}
+
+int Sprite::getPosY(void) {
+	return mPosY;
+}
+
 TextWindow::TextWindow() {
 	mPosY = BG_HEIGHT;
 	play = false;

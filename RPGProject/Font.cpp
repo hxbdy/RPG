@@ -4,11 +4,14 @@ Font::Font() {
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
+	mDisplayLength = 1;
+	mPosX = 10;
+	mPosY = 15;
 }
 
 void Font::loadFont(std::string path) {
 
-	mFont=TTF_OpenFont(path.c_str(),20);
+	mFont=TTF_OpenFont(path.c_str(),10);
 
 	if (mFont == NULL) {
 		fprintf(stderr,"Failed to load font ERR : %s\n", TTF_GetError());
@@ -19,7 +22,18 @@ void Font::loadFont(std::string path) {
 void Font::setText(SDL_Renderer* renderer, std::string text) {
 	free();
 
-	SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, text.c_str(), mTextColor);
+	std::string renderText;
+	int len = text.length();
+
+	if (len<=mDisplayLength) {
+		renderText = text;
+	}
+	else {
+		renderText=text.substr(0, mDisplayLength);
+		mDisplayLength++;
+	}
+
+	SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, renderText.c_str(), mTextColor);
 
 	if (textSurface == NULL) {
 		fprintf(stderr, "Unable to render text surface ERR : %s\n", TTF_GetError());
@@ -40,9 +54,9 @@ void Font::setText(SDL_Renderer* renderer, std::string text) {
 
 }
 
-void Font::render(SDL_Renderer* renderer,int x, int y) {
+void Font::render(SDL_Renderer* renderer) {
 
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	SDL_Rect renderQuad = { mPosX, mPosY, mWidth, mHeight };
 
 	SDL_RenderCopy(renderer, mTexture,NULL,&renderQuad);
 	//SDL_RenderCopyEx(renderer, mTexture,NULL,&renderQuad,NULL,NULL,SDL_FLIP_NONE);

@@ -65,12 +65,13 @@ int main(int argc, char* argv[]) {
 	bg.loadBG(window.getRenderer(), "convenience.bmp");
 
 	font.loadFont("SmileBASIC.ttf");
-	font.setColor(0x00, 0x00, 0x00, 0x00);
+	font.setColor(0xff, 0xff, 0xff, 0x00);
+	std::string text="Listening to favorite music.";
 
 	sp.loadSprite(window.getRenderer(), "staff.png");
 	int playerLocate[] = { 0,0,48,48,48,0,48,48,96,0,48,48 };
 	sp.setSprite(playerLocate);
-	sp.setPos(0, 0);
+	sp.setPos(240, 192);
 
 	npc.loadSprite(window.getRenderer(),"staff.png");
 	int npcLocate[] = {0,0,48,48,48,0,48,48,96,0,48,48};
@@ -138,6 +139,11 @@ int main(int argc, char* argv[]) {
 		sp.render(window.getRenderer(),SDL_FLIP_HORIZONTAL);
 		npc.render(window.getRenderer(), SDL_FLIP_NONE);
 		textWindow.render(window.getRenderer());
+		
+		if (textWindow.getPosY() == 0) {
+			font.setText(window.getRenderer(),text);
+			font.render(window.getRenderer());
+		}
 
 		SDL_RenderPresent(window.getRenderer());
 
