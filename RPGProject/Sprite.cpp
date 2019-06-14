@@ -48,21 +48,91 @@ void Sprite::render(SDL_Renderer* renderer, SDL_RendererFlip flip) {
 }
 
 void Sprite::move() {
+	int spx, spy;
 	mPosX += mVelX;
+	//getSPPos(mPosX, mPosY, &spx, &spy);
 	if (mPosX < 0) {
 		mPosX = 0;
 	}
-	else if (mPosX + mWidth > SCREEN_WIDTH) {
-		mPosX = SCREEN_WIDTH - mWidth;
+	else if ((mPosX + mWidth > SCREEN_WIDTH) || checkCollision(mPosX,mPosY)) {
+		mPosX -= mVelX;
 	}
 	mPosY += mVelY;
+	//getSPPos(mPosX, mPosY, &spx, &spy);
 	if (mPosY < 0) {
 		mPosY = 0;
 	}
-	else if (mPosY + mHeight > SCREEN_HEIGHT) {
-		mPosY = SCREEN_HEIGHT - mHeight;
+	else if ((mPosY + mHeight > SCREEN_HEIGHT) || checkCollision(mPosX, mPosY)) {
+		mPosY -= mVelY;
 	}
-	fprintf(stdout, "mPosX:%03d mPosY:%03d\n", mPosX, mPosY);
+	//fprintf(stdout, "(%03d,%03d) (%02d,%02d)\n", mPosX, mPosY,spx,spy);
+}
+
+bool checkCollisionRect(SDL_Rect a, SDL_Rect b)
+{
+	//The sides of the rectangles
+	int leftA, leftB;
+	int rightA, rightB;
+	int topA, topB;
+	int bottomA, bottomB;
+
+	//Calculate the sides of rect A
+	leftA = a.x;
+	rightA = a.x + a.w;
+	topA = a.y;
+	bottomA = a.y + a.h;
+
+	//Calculate the sides of rect B
+	leftB = b.x;
+	rightB = b.x + b.w;
+	topB = b.y;
+	bottomB = b.y + b.h;
+	//If any of the sides from A are outside of B
+	if (bottomA <= topB)
+	{
+		return false;
+	}
+
+	if (topA >= bottomB)
+	{
+		return false;
+	}
+
+	if (rightA <= leftB)
+	{
+		return false;
+	}
+
+	if (leftA >= rightB)
+	{
+		return false;
+	}
+
+	//If none of the sides from A are outside B
+	return true;
+}
+
+bool Sprite::checkCollision(int x, int y) {
+	SDL_Rect sp;
+	SDL_Rect wall;
+	sp.x = x;
+	sp.y = y;
+	sp.w = SPRITE_WIDTH;
+	sp.h = SPRITE_HEIGHT;
+	for (int posY = 0; posY < 7; posY++) {
+		for (int posX = 0; posX < 6; posX++) {
+			if (mWall[posX + 6 * posY]) {
+				wall.x = posX*SPRITE_WIDTH;
+				wall.y = posY*SPRITE_HEIGHT;
+				wall.w = SPRITE_WIDTH;
+				wall.h = SPRITE_HEIGHT;
+				if (checkCollisionRect(sp, wall)) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void Sprite::handleEvent(SDL_Event& e) {
@@ -129,6 +199,11 @@ int Sprite::getPosX(void) {
 
 int Sprite::getPosY(void) {
 	return mPosY;
+}
+
+void Sprite::getSPPos(int px, int py, int* sx, int* sy) {
+	*sx = px / SPRITE_WIDTH;
+	*sy = py / SPRITE_HEIGHT;
 }
 
 TextWindow::TextWindow() {

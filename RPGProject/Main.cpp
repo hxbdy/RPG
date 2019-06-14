@@ -48,16 +48,6 @@ int main(int argc, char* argv[]) {
 	Timer fps;
 	std::stringstream timeText;
 
-	bool wall[] = {
-		true, true, true, true, true, true,
-		true, true, true, true, true, true,
-		true, false, false, false, false, true,
-		true, true, true, false, false, true,
-		true, false, true, false, false, false,
-		true, false, true, false, false, true,
-		true, true, true, true, true, true
-	};
-
 	// FPS Counter
 	int countedFrames = 0;
 

@@ -37,6 +37,8 @@ public:
 	void setPos(int x, int y);
 	int getPosX(void);
 	int getPosY(void);
+	void getSPPos(int px,int py ,int* sx,int* sy);
+	bool checkCollision(int x, int y);
 	virtual void anim();
 protected:
 	int mWidth,mHeight;
@@ -45,6 +47,15 @@ protected:
 	int mSpan;
 	int mSpNum;
 	bool mIsAnimating;
+	bool mWall[42] = {
+		true, true, true, true, true, true,
+		true, true, true, true, true, true,
+		true, false, false, false, false, true,
+		true, true, true, false, false, true,
+		true, false, true, false, false, false,
+		true, false, true, false, false, true,
+		true, true, true, true, true, true
+	};
 	SDL_Rect mSpClips[SPRITE_FRAMES];
 	SDL_Texture* mTexture;
 	static int animate(void* frames);
