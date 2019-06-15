@@ -1,4 +1,4 @@
-#include "Bg.h"
+﻿#include "Bg.h"
 
 void Bg::loadBG(SDL_Renderer* renderer,std::string path) {
 	SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());

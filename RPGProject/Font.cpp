@@ -1,4 +1,4 @@
-#include "Font.h"
+﻿#include "Font.h"
 
 Font::Font() {
 	mTexture = NULL;
@@ -22,18 +22,20 @@ void Font::loadFont(std::string path) {
 void Font::setText(SDL_Renderer* renderer, std::string text) {
 	free();
 
-	std::string renderText;
+	std::string renderText;// = text;
+
 	int len = text.length();
 
 	if (len<=mDisplayLength) {
 		renderText = text;
 	}
 	else {
-		renderText=text.substr(0, mDisplayLength);
+		renderText=text.substr(0, mDisplayLength*3);
 		mDisplayLength++;
+
 	}
 
-	SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, renderText.c_str(), mTextColor);
+	SDL_Surface* textSurface = TTF_RenderUTF8_Solid(mFont, renderText.c_str(), mTextColor);
 
 	if (textSurface == NULL) {
 		fprintf(stderr, "Unable to render text surface ERR : %s\n", TTF_GetError());

@@ -79,4 +79,9 @@
       <Filter>リソース ファイル</Filter>
     </Media>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="speech.txt">
+      <Filter>リソース ファイル</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

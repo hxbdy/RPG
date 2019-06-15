@@ -1,3 +1,6 @@
+﻿#include <fstream>
+#include <iostream>
+
 #include "SDL_mixer.h"
 
 #include "Window.h"
@@ -54,9 +57,12 @@ int main(int argc, char* argv[]) {
 	window.createWindow("RPG | FPS : 00");
 	bg.loadBG(window.getRenderer(), "convenience.bmp");
 
-	font.loadFont("SmileBASIC.ttf");
+	font.loadFont("PixelMplus10-Regular.ttf");
 	font.setColor(0xff, 0xff, 0xff, 0x00);
-	std::string text="Listening to favorite music.";
+	char text[80];
+	std::ifstream in("speech.txt");
+	std::cin.rdbuf(in.rdbuf());
+	std::cin >> text;
 
 	sp.loadSprite(window.getRenderer(), "staff.png");
 	int playerLocate[] = { 0,0,48,48,48,0,48,48,96,0,48,48 };
@@ -134,6 +140,7 @@ int main(int argc, char* argv[]) {
 			font.setText(window.getRenderer(),text);
 			font.render(window.getRenderer());
 		}
+
 
 		SDL_RenderPresent(window.getRenderer());
 

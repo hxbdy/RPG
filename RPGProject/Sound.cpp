@@ -1,4 +1,4 @@
-
+﻿
 #include "Sound.h"
 
 void Sound::loadSound() {

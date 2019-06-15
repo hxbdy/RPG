@@ -152,6 +152,9 @@
     <Media Include="progress.mp3" />
     <Media Include="selection.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="speech.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
