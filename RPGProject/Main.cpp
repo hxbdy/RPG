@@ -60,9 +60,13 @@ int main(int argc, char* argv[]) {
 	font.loadFont("PixelMplus10-Regular.ttf");
 	font.setColor(0xff, 0xff, 0xff, 0x00);
 	char text[80];
-	std::ifstream in("speech.txt");
-	std::cin.rdbuf(in.rdbuf());
-	std::cin >> text;
+	FILE* fp;
+	fopen_s(&fp,"speech.txt", "r");
+	fgets(text, sizeof(text), fp);
+	fclose(fp);
+	//std::ifstream in("speech.txt");
+	//std::cin.rdbuf(in.rdbuf());
+	//std::cin >> text;
 
 	sp.loadSprite(window.getRenderer(), "staff.png");
 	int playerLocate[] = { 0,0,48,48,48,0,48,48,96,0,48,48 };
